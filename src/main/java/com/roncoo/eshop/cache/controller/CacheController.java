@@ -2,6 +2,7 @@ package com.roncoo.eshop.cache.controller;
 
 import javax.annotation.Resource;
 
+import com.roncoo.eshop.cache.prewarm.CachePrewarmThread;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,7 +36,13 @@ public class CacheController {
 	public ProductInfo testGetCache(Long id) {
 		return cacheService.getLocalCache(id);
 	}
-	
+
+	@RequestMapping("/prewarmCache")
+	@ResponseBody
+	public void prewarmCache(){
+		new CachePrewarmThread().start();
+	}
+
 	@RequestMapping("/getProductInfo")
 	@ResponseBody
 	public ProductInfo getProductInfo(Long productId) {
@@ -51,7 +58,7 @@ public class CacheController {
 		
 		if(productInfo == null) {
 			// 就需要从数据源重新拉去数据，重建缓存，但是这里先不讲
-			String productInfoJSON = "{\"id\": 12, \"name\": \"iphone7手机\", \"price\": 5599, \"pictureList\":\"a.jpg,b.jpg\", \"specification\": \"iphone7的规格\", \"service\": \"iphone7的售后服务\", \"color\": \"红色,白色,黑色\", \"size\": \"5.5\", \"shopId\": 1, \"modifiedTime\": \"2017-01-01 10:01:00\"}";
+			String productInfoJSON = "{\"id\": "+productId+", \"name\": \"iphone7手机\", \"price\": 5599, \"pictureList\":\"a.jpg,b.jpg\", \"specification\": \"iphone7的规格\", \"service\": \"iphone7的售后服务\", \"color\": \"红色,白色,黑色\", \"size\": \"5.5\", \"shopId\": 1, \"modifiedTime\": \"2017-01-01 10:01:00\"}";
 			productInfo = JSONObject.parseObject(productInfoJSON, ProductInfo.class);
 			// 将数据推送到一个内存队列中
 			RebuildCacheQueue rebuildCacheQueue = RebuildCacheQueue.getInstance();
