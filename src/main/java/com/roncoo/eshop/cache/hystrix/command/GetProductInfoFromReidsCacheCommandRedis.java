@@ -1,8 +1,6 @@
 package com.roncoo.eshop.cache.hystrix.command;
 
 import com.alibaba.fastjson.JSONObject;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.roncoo.eshop.cache.model.ProductInfo;
 import com.roncoo.eshop.cache.spring.SpringContext;
 import redis.clients.jedis.JedisCluster;
@@ -13,10 +11,9 @@ import redis.clients.jedis.JedisCluster;
  * @author: Li YangLin
  * @create: 2018-09-04 22:31
  */
-public class GetProductInfoFromReidsCacheCommand extends HystrixCommand<ProductInfo> {
+public class GetProductInfoFromReidsCacheCommandRedis extends RedisBaseCommand<ProductInfo> {
     private long productId;
-    public GetProductInfoFromReidsCacheCommand(long productId) {
-        super(HystrixCommandGroupKey.Factory.asKey("RedisGroup"));
+    public GetProductInfoFromReidsCacheCommandRedis(long productId) {
         this.productId=productId;
     }
 
@@ -31,4 +28,8 @@ public class GetProductInfoFromReidsCacheCommand extends HystrixCommand<ProductI
         return null;
     }
 
+    @Override
+    protected ProductInfo getFallback() {
+        return null;
+    }
 }

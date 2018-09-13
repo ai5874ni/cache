@@ -2,17 +2,16 @@ package com.roncoo.eshop.cache.service.impl;
 
 import javax.annotation.Resource;
 
-import com.roncoo.eshop.cache.hystrix.command.GetProductInfoFromReidsCacheCommand;
-import com.roncoo.eshop.cache.hystrix.command.GetShopInfoFromReidsCacheCommand;
-import com.roncoo.eshop.cache.hystrix.command.SaveProductInfo2ReidsCacheCommand;
-import com.roncoo.eshop.cache.hystrix.command.SaveShopInfo2ReidsCacheCommand;
+import com.roncoo.eshop.cache.hystrix.command.GetProductInfoFromReidsCacheCommandRedis;
+import com.roncoo.eshop.cache.hystrix.command.GetShopInfoFromReidsCacheCommandRedis;
+import com.roncoo.eshop.cache.hystrix.command.SaveProductInfo2ReidsCacheCommandRedis;
+import com.roncoo.eshop.cache.hystrix.command.SaveShopInfo2ReidsCacheCommandRedis;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.JedisCluster;
 
-import com.alibaba.fastjson.JSONObject;
 import com.roncoo.eshop.cache.model.ProductInfo;
 import com.roncoo.eshop.cache.model.ShopInfo;
 import com.roncoo.eshop.cache.service.CacheService;
@@ -98,7 +97,7 @@ public class CacheServiceImpl implements CacheService {
      * @param productInfo
      */
     public void saveProductInfo2ReidsCache(ProductInfo productInfo) {
-        new SaveProductInfo2ReidsCacheCommand(productInfo).execute();
+        new SaveProductInfo2ReidsCacheCommandRedis(productInfo).execute();
     }
 
     /**
@@ -106,7 +105,7 @@ public class CacheServiceImpl implements CacheService {
      *
      */
     public void saveShopInfo2ReidsCache(ShopInfo shopInfo) {
-        new SaveShopInfo2ReidsCacheCommand(shopInfo).execute();
+        new SaveShopInfo2ReidsCacheCommandRedis(shopInfo).execute();
     }
 
     /**
@@ -115,7 +114,7 @@ public class CacheServiceImpl implements CacheService {
      */
     public ProductInfo getProductInfoFromReidsCache(Long productId) {
 
-        return new GetProductInfoFromReidsCacheCommand(productId).execute();
+        return new GetProductInfoFromReidsCacheCommandRedis(productId).execute();
     }
 
     /**
@@ -123,7 +122,7 @@ public class CacheServiceImpl implements CacheService {
      *
      */
     public ShopInfo getShopInfoFromReidsCache(Long shopId) {
-        return new GetShopInfoFromReidsCacheCommand(shopId).execute();
+        return new GetShopInfoFromReidsCacheCommandRedis(shopId).execute();
     }
 
 }

@@ -1,8 +1,6 @@
 package com.roncoo.eshop.cache.hystrix.command;
 
 import com.alibaba.fastjson.JSONObject;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.roncoo.eshop.cache.model.ProductInfo;
 import com.roncoo.eshop.cache.spring.SpringContext;
 import redis.clients.jedis.JedisCluster;
@@ -13,10 +11,9 @@ import redis.clients.jedis.JedisCluster;
  * @author: Li YangLin
  * @create: 2018-09-04 22:19
  */
-public class SaveProductInfo2ReidsCacheCommand extends HystrixCommand<Boolean>{
+public class SaveProductInfo2ReidsCacheCommandRedis extends RedisBaseCommand<Boolean> {
     private ProductInfo productInfo;
-    public SaveProductInfo2ReidsCacheCommand(ProductInfo productInfo) {
-        super(HystrixCommandGroupKey.Factory.asKey("RedisGroup"));
+    public SaveProductInfo2ReidsCacheCommandRedis(ProductInfo productInfo) {
         this.productInfo=productInfo;
     }
 
@@ -26,5 +23,10 @@ public class SaveProductInfo2ReidsCacheCommand extends HystrixCommand<Boolean>{
         JedisCluster jedisCluster= (JedisCluster) SpringContext.getApplicationContext().getBean("JedisClusterFactory");
         jedisCluster.set(key, JSONObject.toJSONString(productInfo));
         return true;
+    }
+
+    @Override
+    protected Boolean getFallback() {
+        return false;
     }
 }

@@ -1,8 +1,6 @@
 package com.roncoo.eshop.cache.hystrix.command;
 
 import com.alibaba.fastjson.JSONObject;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.roncoo.eshop.cache.model.ShopInfo;
 import com.roncoo.eshop.cache.spring.SpringContext;
 import redis.clients.jedis.JedisCluster;
@@ -13,10 +11,9 @@ import redis.clients.jedis.JedisCluster;
  * @author: Li YangLin
  * @create: 2018-09-04 22:35
  */
-public class GetShopInfoFromReidsCacheCommand extends HystrixCommand<ShopInfo> {
+public class GetShopInfoFromReidsCacheCommandRedis extends RedisBaseCommand<ShopInfo> {
 private long shopId;
-    public GetShopInfoFromReidsCacheCommand(long shopId) {
-        super(HystrixCommandGroupKey.Factory.asKey("RedisGroup"));
+    public GetShopInfoFromReidsCacheCommandRedis(long shopId) {
         this.shopId=shopId;
     }
 
@@ -28,6 +25,10 @@ private long shopId;
         if(json != null) {
             return JSONObject.parseObject(json, ShopInfo.class);
         }
+        return null;
+    }
+    @Override
+    protected ShopInfo getFallback() {
         return null;
     }
 }
